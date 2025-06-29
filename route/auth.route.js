@@ -1,11 +1,18 @@
 import { Router } from "express";
-import { register } from "../controller/auth.controller.js";
-
-
+import authCtrl from "../controller/auth.controller.js";
+import {registerDTO} from "../contracts/auth.contract.js"
+import bodyValidator from "../middleware/validator.middleware.js";
 const route  = Router();
 
 
-route.post('/register', register)
+route.post('/register', bodyValidator(registerDTO),authCtrl.register)
+
+
+// route.get('/activate/:token');
+
+// route.post('/login')
+
+// route.delete('/logout',)
 
 
 

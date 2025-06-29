@@ -7,6 +7,9 @@ app.get('/', (req,res) => {
 });
 
 // Starting the server at port 
-app.listen(port, () => {
-    console.log(`Server started at port: ${port}`)
+app.listen(port, (err) => {
+    if(!err) { 
+        console.log(`Server started at port: ${port}`)
+        console.log("please click ctrl+C to discontinue")
+    } 
 })
