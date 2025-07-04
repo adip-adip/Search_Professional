@@ -1,5 +1,9 @@
+import dotenv from "dotenv"
+dotenv.config()
 import express from 'express';
-import authRouter from './route/auth.route.js'
+import route from "./route/auth.route.js";
+import { MulterError } from "multer";
+
 
 
 const app = express()
@@ -10,7 +14,7 @@ app.use(express.urlencoded({
     extended : false
 }))
 
-app.use("/api/auth", authRouter)
+app.use("/api/auth", route)
 
 app.use((req, res, next) => {
     next({
@@ -29,6 +33,14 @@ app.use ((error, req, res, next) => {
     let message = error.message || "Server error ...";
     let status = error.status || "INTERNAL_SERVER_ERROR";
     let code = error.code || 500;
+
+    if(error instanceof MulterError) {
+        code = 400,
+        message = "Validation failed",
+        result = {
+            "image" : "File size is to large"
+        }
+    }
 
     res.status(code).json({
         result : result,

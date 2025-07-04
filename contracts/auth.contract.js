@@ -11,7 +11,8 @@ const registerDTO = Joi.object({
     }),
     phone : Joi.string(),
     address : Joi.string(),
-    role : Joi.string().regex(/^(customer|admin)$/)
+    role : Joi.string().regex(/^(customer|admin)$/),
+    image : Joi.string()
 
 })
 

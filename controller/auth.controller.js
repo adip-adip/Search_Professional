@@ -1,13 +1,55 @@
-import Joi from "joi";
+import { fileDelete, randomStringGenerator, uploadHelper } from "../utilitis/helper.js"
+import bcrypt from "bcryptjs";
+import {myEvent, EventName} from "../middleware/events.middleware.js";
+
 class AuthController {
     register = async (req, res, next) => { 
         try{
             const data = req.body;
 
-            console.log(data)
+            if(req.file) {
+                data.image = await uploadHelper(req.file.path)
+                // const uploadFile = await uploadHelper(req.file)
+                // console.log(uploadFile);
+                //     const response = await cloudinary.uploader.upload_stream({
+            //         resource_type : "auto"
+            //     },(error, result) => {
+            //         if(error) {
+            //             console.log(error)
+            //         }else {
+            //             console.log(result)
+            //         }
+            //     }
+            // )
+            //     console.log(response)
+            }
 
+            var salt = bcrypt.genSaltSync(10);
+            data.password = bcrypt.hashSync(data.password, salt)
+            data.salt = salt
+
+            data.activationToken = randomStringGenerator(100)
+            data.tokenExpires = new Date(Date.now() + (60*60*3*1000))
+
+            myEvent.emit(EventName.REGISTER_EMAIL, {
+                name : data.name,
+                email : data.email,
+                token : data.activationToken
+            })
+
+
+            res.json({
+                result : data,
+                message : "Your account have been registered sucessfully",
+                status : "Registration Sucessfull"
+            })
+
+            
         }catch(exception) {
-            console.log(exception)
+            if(req.file) {
+                fileDelete(req.file.path)
+            }
+            console.log("I am here",exception)
         }
 
       
