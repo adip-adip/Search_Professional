@@ -1,53 +1,77 @@
 import mongoose from "mongoose";
 
-const UserSchema = new mongoose.Schema({
-    name  : {
-        type : String,
-        min: 2,
-        max : 50,
-        require : true
+const UserSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      minlength: 2,
+      maxlength: 50,
     },
-    email : {
-        type : String,
-        unique : true,
-        requir : true
+    email: {
+      type: String,
+      required: true,
+      unique: true,
     },
-    password : {
-        type : String,
-        require : true
+    password: {
+      type: String,
+      required: true,
     },
-    activationToken : String,
-    activeFor : Date,
-    address : String,
-    phone : String,
-    role : {
-        type : String,
-        enum : ["user", "admin", "superAdmin"],
-        default : "user" 
+    confirmPassword: {
+      type: String,
+      required: true,
     },
-    status : {
-        type : String,
-        enum : ["active", "inactive"],
-        default : "inactive"
+    title: {
+      type: String,
+      required: true,
     },
-    image : String,
-    createdBy : {
-        type : mongoose.Types.ObjectId,
-        ref : "User",
-        default : null
+    industry: {
+      type: String,
+      required: true,
     },
-    updatedBY : {
-        type : mongoose.Types.ObjectId,
-        ref : "User",
-        default : null
+    location: {
+      type: String,
+      required: true,
+    },
+    experience: {
+      type: String,
+      required: true,
+    },
+    skills: {
+      type: [String],
+      required: true,
+      default: [],
+    },
+    activationToken: String,
+    activeFor: Date,
+    role: {
+      type : String,
+      enum : ["admin", "user"],
+      default : "user"
+    },
+    status: {
+        type: String,
+        enum: ["active", "inactive"],
+        default: "inactive"
+    },
+    createdBy: {
+        type: mongoose.Types.ObjectId,
+        ref: "User",
+        default: null
+    },
+    updatedBy: {
+        type: mongoose.Types.ObjectId,
+        ref: "User",
+        default: null
     }
-},{
-    timestamps : true,
-    autoIndex : true,
-    autoCreate : true
-})
+  },
+  {
+    timestamps: true,
+    autoIndex: true,
+    autoCreate: true,
+  }
+);
 
-const UserModel = mongoose.model("User", UserSchema)
-
+const UserModel = mongoose.model("User", UserSchema);
 
 export default UserModel;

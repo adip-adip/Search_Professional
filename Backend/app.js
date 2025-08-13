@@ -5,10 +5,17 @@ import express from 'express';
 import route from "./route/auth.route.js";
 import { MulterError } from "multer";
 import runUserSeeder from "./seeder/user.seeder.js";
+import cors from "cors"
+import router from "./route/user.route.js";
 
 
 const app = express()
 runUserSeeder()
+
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true // only if you're using cookies or auth headers
+}));
 
 //json parser
 app.use(express.json());
@@ -17,6 +24,7 @@ app.use(express.urlencoded({
 }))
 
 app.use("/api/auth", route)
+
 
 
 app.use((req, res, next) => {

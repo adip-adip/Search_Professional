@@ -1,9 +1,10 @@
-import router from "./auth.routes";
+import router from "./auth.route.js";
 
-const router = Router();
-import { getUserList } from "../controllers/user.controller.js";
 import { authMiddleware } from "../middleware/auth.middleware.js";
+import userCtrl from "../controller/user.controller.js";
 
-router.get("/list", authMiddleware, getUserList);
+router.get("/list", authMiddleware, userCtrl.getUserList);
+
+router.patch("/update/:id", authMiddleware,userCtrl.update)
 
 export default router;

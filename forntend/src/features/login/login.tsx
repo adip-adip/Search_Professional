@@ -1,7 +1,7 @@
 import { useState, type ChangeEvent, type FormEvent } from "react"
 import "./login.css"
 import { login } from "../../shared/config/api";
-import type { Axios, AxiosResponse } from "axios";import { useNavigate } from "react-router-dom";
+import type { Axios, AxiosResponse } from "axios";import { Navigate, useNavigate } from "react-router-dom";
 
 
 function Login() {
@@ -22,7 +22,6 @@ function Login() {
         login(formdata).then((res : AxiosResponse) => {
             localStorage.setItem("token", res.data.token);
             localStorage.setItem("user", JSON.stringify(res.data.user));
-            navigate('/home')
         })
         console.log(formdata)
     }

@@ -65,6 +65,7 @@ class AuthService{
             throw exception;
         }
     }
+
 }
 
 const authsvc = new AuthService()

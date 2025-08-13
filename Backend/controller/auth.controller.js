@@ -37,7 +37,7 @@ class AuthController {
             console.log("I am here",exception)
         }
 
-      
+    
         // const {username, password} = req.body;
     
         // const userExists = user.find (u => u.username === username);
@@ -60,6 +60,7 @@ class AuthController {
             const user = await authsvc.getSingleUserByFilter({
                 email : email
             })
+
 
             if(bcrypt.compareSync(password, user.password)){
                 if(user.status !== Status.ACTIVE) {
@@ -92,7 +93,7 @@ class AuthController {
                                 _id : user._id,
                                 name  : user.name,
                                 email : user.email,
-                                role : user.role
+                                role : user.role,
                             }
                         },
                         message : `Welcome to ${user.role} pannel`,
@@ -174,6 +175,7 @@ class AuthController {
         try{
             const token = req.params.token;
             const userDetail = await authsvc.getSingleUserByFilter({activationToken : token})
+
             
             const activationToken = randomStringGenerator(100)
             const activeFor = new Date(Date.now() + (60*60*3*1000))
@@ -201,10 +203,38 @@ class AuthController {
             next(exception)
         }
     }
+    
+     me = async (req, res, next) => {
+    try {
+        const user = await authsvc.getSingleUserByFilter({ _id: req.user.sub });
 
-    getLoggedInUser = async (req, res, next) => {
-        
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found",
+                status: "USER_NOT_FOUND"
+            });
+        }
+
+        res.json({
+            result: {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                industry : user.industry,
+                location : user.location,
+                role: user.role,
+                experience : user.experience,
+                title : user.title,
+                skills : user.skills || []
+            },
+            message: "Logged in user",
+            status: "Logged_In_User"
+        });
+    } catch (error) {
+        next(error);
     }
+}
+
 }
 
 const authCtrl = new AuthController()
