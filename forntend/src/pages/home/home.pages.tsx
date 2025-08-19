@@ -11,8 +11,10 @@ import {
   FaBars,
   FaSearch,
   FaEdit,
-  FaAddressCard
+  FaAddressCard,
+  FaSpinner
 } from 'react-icons/fa';
+import userListSvc from './home.service';
 
 export interface UserInterface {
   name: string;
@@ -23,6 +25,9 @@ export interface UserInterface {
   location?: string;
   skills?: string[];
   profilePicture?: string;
+  verified?: boolean;
+  experience?: string;
+  industry?: string;
 }
 
 const ProfessionalSearch = () => {
@@ -35,72 +40,54 @@ const ProfessionalSearch = () => {
   });
 
   const [user, setUser] = useState<UserInterface | null>(null);
+  const [professionals, setProfessionals] = useState<UserInterface[]>([]);
   const [loadingUser, setLoadingUser] = useState(true);
+  const [loadingProfessionals, setLoadingProfessionals] = useState(true);
   const [showSidePanel, setShowSidePanel] = useState(true);
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const fetchData = async () => {
       try {
-        const res = await authSvc.getLoggedInuser();
-        setUser(res.data.result);
+        // Fetch user data
+        const userResponse = await authSvc.getLoggedInuser();
+        if (userResponse.data?.result) {
+          setUser(userResponse.data.result);
+        }
+
+        // Fetch professionals data
+        const professionalsResponse = await userListSvc.getUserList();
+        
+        // Handle both array and { result: [...] } formats
+        const professionalsData = Array.isArray(professionalsResponse.data) 
+          ? professionalsResponse.data 
+          : professionalsResponse.data?.result || [];
+        
+        setProfessionals(professionalsData);
       } catch (error) {
-        console.error("Failed to fetch user:", error);
-        setUser(null);
+        console.error("Error fetching data:", error);
       } finally {
         setLoadingUser(false);
+        setLoadingProfessionals(false);
       }
     };
 
-    fetchUser();
+    fetchData();
   }, []);
 
-  const professionals = [
-    {
-      id: 1,
-      name: 'John Smith',
-      title: 'Marketing Director',
-      industry: 'Marketing',
-      location: 'New York, NY',
-      experience: '10+ years',
-      skills: ['Digital Marketing', 'Brand Strategy', 'SEO'],
-      verified: true
-    },
-    {
-      id: 2,
-      name: 'Sarah Johnson',
-      title: 'Software Engineer',
-      industry: 'Technology',
-      location: 'San Francisco, CA',
-      experience: '5-7 years',
-      skills: ['JavaScript', 'React', 'Node.js'],
-      verified: true
-    },
-    {
-      id: 3,
-      name: 'Michael Chen',
-      title: 'Financial Analyst',
-      industry: 'Finance',
-      location: 'Chicago, IL',
-      experience: '3-5 years',
-      skills: ['Financial Modeling', 'Excel', 'Data Analysis'],
-      verified: false
-    }
-  ];
-
   const filteredProfessionals = professionals.filter(professional => {
-    const matchesSearch = professional.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      professional.title.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = professional?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (professional?.title && professional.title.toLowerCase().includes(searchTerm.toLowerCase()));
 
-    const matchesIndustry = !filters.industry || professional.industry === filters.industry;
-    const matchesLocation = !filters.location || professional.location === filters.location;
-    const matchesExperience = !filters.experience || professional.experience === filters.experience;
+    const matchesIndustry = !filters.industry || professional?.industry === filters.industry;
+    const matchesLocation = !filters.location || professional?.location === filters.location;
+    const matchesExperience = !filters.experience || professional?.experience === filters.experience;
 
     return matchesSearch && matchesIndustry && matchesLocation && matchesExperience;
   });
 
-  const industries = [...new Set(professionals.map(p => p.industry))];
-  const locations = [...new Set(professionals.map(p => p.location))];
-  const experiences = [...new Set(professionals.map(p => p.experience))];
+  const industries = [...new Set(professionals.map(p => p?.industry).filter(Boolean))];
+  const locations = [...new Set(professionals.map(p => p?.location).filter(Boolean))];
+  const experiences = [...new Set(professionals.map(p => p?.experience).filter(Boolean))];
 
   const handleFilterChange = (filterName: string, value: string) => {
     setFilters(prev => ({
@@ -155,7 +142,7 @@ const ProfessionalSearch = () => {
 
       {/* Main Content with Side Panel */}
       <div className="container mx-auto px-4 py-6 flex flex-col md:flex-row gap-6">
-        {/* Side Panel - Improved with React Icons */}
+        {/* Side Panel */}
         {showSidePanel && (
           <aside className="relative w-full md:w-72 bg-[#393E46] p-6 rounded-lg shadow-lg sticky top-6 h-fit">
             <div className="flex justify-between items-center mb-6">
@@ -170,7 +157,7 @@ const ProfessionalSearch = () => {
 
             {loadingUser ? (
               <div className="flex justify-center items-center h-20">
-                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#00ADB5]"></div>
+                <FaSpinner className="animate-spin text-2xl text-[#00ADB5]" />
               </div>
             ) : user ? (
               <div className="space-y-6">
@@ -232,7 +219,7 @@ const ProfessionalSearch = () => {
                 )}
                 <div>
                   <button
-                    onClick={() => navigate(`/update/${user._id}`)}
+                    onClick={() => navigate(`/update/${user._id}`, { state: { user } })}
                     className="w-full mt-4 px-4 py-2 bg-[#00ADB5] hover:bg-[#008E9B] text-white rounded transition-colors font-medium flex items-center justify-center"
                   >
                     <FaEdit className="mr-2" />
@@ -246,7 +233,6 @@ const ProfessionalSearch = () => {
                     View Profile
                   </button>
                 </div>
-
               </div>
             ) : (
               <div className="text-center py-6">
@@ -347,15 +333,21 @@ const ProfessionalSearch = () => {
               {filteredProfessionals.length} {filteredProfessionals.length === 1 ? 'Professional' : 'Professionals'} Found
             </h3>
 
-            {filteredProfessionals.length === 0 ? (
+            {loadingProfessionals ? (
+              <div className="flex justify-center items-center h-64">
+                <FaSpinner className="animate-spin text-4xl text-[#00ADB5]" />
+              </div>
+            ) : filteredProfessionals.length === 0 ? (
               <div className="bg-[#393E46] rounded-lg shadow-lg p-8 text-center text-[#EEEEEE] opacity-80">
-                No professionals match your search criteria. Try adjusting your filters.
+                {professionals.length === 0 
+                  ? "No professionals available" 
+                  : "No professionals match your search criteria. Try adjusting your filters."}
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredProfessionals.map(professional => (
                   <div
-                    key={professional.id}
+                    key={professional._id || professional.id}
                     className="bg-[#393E46] rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300"
                   >
                     <div className="p-6">
@@ -369,23 +361,34 @@ const ProfessionalSearch = () => {
                         )}
                       </div>
 
-                      <p className="text-[#00ADB5] font-medium mb-2">{professional.title}</p>
-                      <p className="text-[#EEEEEE] text-sm mb-3 opacity-80">{professional.location}</p>
-                      <p className="text-[#EEEEEE] text-sm mb-4 opacity-60">{professional.experience} experience</p>
+                      {professional.title && (
+                        <p className="text-[#00ADB5] font-medium mb-2">{professional.title}</p>
+                      )}
+                      {professional.location && (
+                        <p className="text-[#EEEEEE] text-sm mb-3 opacity-80">{professional.location}</p>
+                      )}
+                      {professional.experience && (
+                        <p className="text-[#EEEEEE] text-sm mb-4 opacity-60">{professional.experience} experience</p>
+                      )}
 
-                      <div className="flex flex-wrap gap-2 mb-6">
-                        {professional.skills.map(skill => (
-                          <span
-                            key={skill}
-                            className="bg-[#222831] text-[#00ADB5] text-xs px-3 py-1 rounded"
-                          >
-                            {skill}
-                          </span>
-                        ))}
-                      </div>
+                      {professional.skills && professional.skills.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mb-6">
+                          {professional.skills.map((skill, index) => (
+                            <span
+                              key={index}
+                              className="bg-[#222831] text-[#00ADB5] text-xs px-3 py-1 rounded"
+                            >
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+                      )}
 
                       <div className="flex gap-3">
-                        <button className="flex-1 bg-[#222831] hover:bg-[#00ADB5] text-[#EEEEEE] px-4 py-2 rounded text-sm font-medium transition-colors">
+                        <button 
+                          onClick={() => navigate(`/profile/${professional._id || professional.id}`)}
+                          className="flex-1 bg-[#222831] hover:bg-[#00ADB5] text-[#EEEEEE] px-4 py-2 rounded text-sm font-medium transition-colors"
+                        >
                           View Profile
                         </button>
                         <button className="flex-1 bg-[#00ADB5] hover:bg-[#008E9B] text-[#EEEEEE] px-4 py-2 rounded text-sm font-medium transition-colors">

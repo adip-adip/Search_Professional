@@ -14,6 +14,24 @@ class UserController {
         }
     }
 
+      getUserById = async (req, res, next) => {
+        try {
+            const { id } = req.params;
+            const user = await UserModel.findById(id, "-password");
+
+            if (!user) {
+                return res.status(404).json({ message: "User not found" });
+            }
+
+            res.status(200).json({ result: user });
+        } catch (exception) {
+            console.log("Error fetching user by id:", exception);
+            res.status(500).json({
+                message: "Internal server error"
+            })
+        }
+    }
+
     update = async (req, res, next) => {
         try {
             const userId = req.user?._id || req.params.id; // From token or params

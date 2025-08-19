@@ -20,7 +20,6 @@ route.get('/me', authMiddleware,authCtrl.me)
 
 route.post("/login",bodyValidator(loginDTO), authCtrl.login)
 
-route.patch("/update/:id", authMiddleware,userCtrl.update)
 
 
 // route.get('/activate/:token');

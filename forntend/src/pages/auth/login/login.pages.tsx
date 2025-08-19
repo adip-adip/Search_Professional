@@ -24,7 +24,8 @@ const LoginPage = () => {
   const auth: any = useContext(AuthContext);
 
   const { register, handleSubmit, formState: { errors } } = useForm({
-    resolver: yupResolver(loginDTO)
+    resolver: yupResolver(loginDTO),
+    mode: "onChange",
   });
 
   const submitEvent = async (credentials: CredentialsType) => {

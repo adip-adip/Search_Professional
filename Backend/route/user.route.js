@@ -7,4 +7,6 @@ router.get("/list", authMiddleware, userCtrl.getUserList);
 
 router.patch("/update/:id", authMiddleware,userCtrl.update)
 
+router.get("/:id", authMiddleware, userCtrl.getUserById);
+
 export default router;

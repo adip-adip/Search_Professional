@@ -14,6 +14,18 @@ class ProfileService extends BaseHttpService{
       throw exception;
     }
   };
+
+  getUserById = async (id: string) => {
+    try {
+      const response = await this.getRequest(
+        import.meta.env.VITE_VERSION+`/${id}`,
+        {auth: true}
+      );
+      return response;
+    } catch (exception) {
+      throw exception;
+    }
+  };
 }
 
 const profileSvc = new ProfileService()
