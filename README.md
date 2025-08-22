@@ -36,3 +36,7 @@ npm install
 ### Start the frontend development server:
 npm run dev
 
+## Running the application
+- start backend
+- start frontend
+- Open the browser at the frontend URL (http://localhost:5173) and use the application
