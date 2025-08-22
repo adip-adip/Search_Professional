@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authSvc from '../auth/auth.service';
 import {
@@ -226,7 +226,7 @@ const ProfessionalSearch = () => {
                     Edit Profile
                   </button>
                   <button
-                    onClick={() => navigate('/profile')}
+                    onClick={() => navigate('/profile/' + user._id)}
                     className="w-full mt-2 px-4 py-2 bg-[#00ADB5] hover:bg-[#008E9B] text-white rounded transition-colors font-medium flex items-center justify-center"
                   >
                     <FaAddressCard className="mr-2" />
@@ -387,12 +387,9 @@ const ProfessionalSearch = () => {
                       <div className="flex gap-3">
                         <button 
                           onClick={() => navigate(`/profile/${professional._id || professional.id}`)}
-                          className="flex-1 bg-[#222831] hover:bg-[#00ADB5] text-[#EEEEEE] px-4 py-2 rounded text-sm font-medium transition-colors"
+                          className="flex-1 bg-[#00ADB5] hover:bg-[#008E9B] text-[#EEEEEE] px-4 py-2 rounded text-sm font-medium transition-colors"
                         >
                           View Profile
-                        </button>
-                        <button className="flex-1 bg-[#00ADB5] hover:bg-[#008E9B] text-[#EEEEEE] px-4 py-2 rounded text-sm font-medium transition-colors">
-                          Contact
                         </button>
                       </div>
                     </div>
@@ -409,12 +406,6 @@ const ProfessionalSearch = () => {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="text-xl font-semibold mb-4 md:mb-0">ProConnect</div>
-            <div className="flex space-x-6">
-              <a href="#" className="text-[#EEEEEE] hover:text-[#00ADB5] transition-colors">About</a>
-              <a href="#" className="text-[#EEEEEE] hover:text-[#00ADB5] transition-colors">Contact</a>
-              <a href="#" className="text-[#EEEEEE] hover:text-[#00ADB5] transition-colors">Privacy</a>
-              <a href="#" className="text-[#EEEEEE] hover:text-[#00ADB5] transition-colors">Terms</a>
-            </div>
           </div>
           <div className="mt-6 pt-6 border-t border-[#222831] text-center text-[#EEEEEE] opacity-80">
             &copy; {new Date().getFullYear()} ProConnect. All rights reserved.

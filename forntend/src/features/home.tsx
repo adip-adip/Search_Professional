@@ -9,9 +9,7 @@ const HomePage = () => {
           <h1 className="text-2xl font-bold text-blue-600">Search Professional</h1>
           <ul className="flex space-x-6 text-sm font-medium">
             <li><a href="#" className="hover:text-blue-500">Home</a></li>
-            <li><a href="#" className="hover:text-blue-500">About</a></li>
-            <li><a href="#" className="hover:text-blue-500">Features</a></li>
-            <li><a href="#" className="hover:text-blue-500">Contact</a></li>
+         
           </ul>
         </div>
       </nav>

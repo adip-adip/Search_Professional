@@ -6,7 +6,7 @@ const experienceSchema = new mongoose.Schema({
     startDate: { type: Date, required: true },
     endDate: { type: Date },
     description: { type: String },
-    crearedBy: {
+    createdBy: {
         type: mongoose.Types.ObjectId,
         ref: "User",
         required: true
@@ -17,5 +17,6 @@ const experienceSchema = new mongoose.Schema({
     }
 })
 
-const Experience = mongoose.model("Experience", experienceSchema);
-export default Experience;
+const ExperienceModel = mongoose.model("Experience", experienceSchema);
+
+export default ExperienceModel;

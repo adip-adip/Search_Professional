@@ -206,7 +206,7 @@ class AuthController {
     
      me = async (req, res, next) => {
     try {
-        const user = await authsvc.getSingleUserByFilter({ _id: req.user.sub });
+        const user = await authsvc.getSingleUserByFilter({ _id: req.user._id });
 
         if (!user) {
             return res.status(404).json({

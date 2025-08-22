@@ -18,7 +18,7 @@ const RoutingConfig = () => {
                 <Route path= "/home" element = {<ProfessionalSearch/>}/>
                 <Route path="/update/:id" element={<ProfilePage/>} />
                 <Route path= "*" element = {<NotFoundPage/>} />
-                <Route path = "/profile" element = {<ViewProfile/>} />
+                <Route path = "/profile/:id" element = {<ViewProfile/>} />
                 <Route path = "/admin" element = {<AdminLayout/>} />
             </Routes>
         </BrowserRouter>
