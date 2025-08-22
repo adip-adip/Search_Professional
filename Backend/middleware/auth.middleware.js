@@ -10,11 +10,9 @@ export async function authMiddleware(req, res, next) {
         }
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        console.log('Token decoded:', decoded);
-        
+
         // Use decoded.sub instead of decoded.id
         const user = await UserModel.findById(decoded.sub).select('-password');
-        console.log('User found:', user ? user._id : 'None');
         
         if (!user) {
             console.log('User not found in database');
@@ -22,7 +20,6 @@ export async function authMiddleware(req, res, next) {
         }
         
         req.user = user;
-        console.log('User attached to request:', req.user._id);
         next();
     } catch (error) {
         console.error('Auth middleware error:', error);
