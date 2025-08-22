@@ -175,11 +175,7 @@ const ProfilePage = () => {
                   <FaUser className="text-3xl text-[#00ADB5]" />
                 )}
               </div>
-              {editMode && (
-                <button className="absolute bottom-0 right-0 bg-[#00ADB5] text-white p-2 rounded-full hover:bg-[#008E9B] transition">
-                  <FaEdit className="text-sm" />
-                </button>
-              )}
+              
             </div>
 
             <div className="flex-1">
