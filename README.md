@@ -7,7 +7,6 @@ A modern, responsive web application for searching and discovering professionals
 - **Responsive Design**: Works seamlessly on desktop, tablet, and mobile devices
 - **Professional Profiles**: View detailed information including skills, experience, and contact details
 - **User Authentication**: Secure login and registration system
-- **Admin Panel**: Manage professionals and user accounts
 - **Modern UI**: Clean, professional design with smooth animations
 
 
