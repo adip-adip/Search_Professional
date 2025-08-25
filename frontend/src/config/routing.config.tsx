@@ -1,25 +1,58 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import ProfessionalSearch from "../pages/home/home.pages";
 import NotFoundPage from "../pages/error/notfound.pages";
 import LoginPage from "../pages/auth/login/login.pages";
 import RegisterPage from "../pages/auth/register/register.pages";
-import AdminLayout from "../pages/layouts/admin.layout";
 import { ToastContainer } from "react-toastify";
 import ProfilePage from "../pages/profile/profile_edit/profile_edit.pages";
 import ViewProfile from "../pages/profile/viewProfile/profile.pages";
+import AuthGuard from "../guards/auth.guard";
+import LoginGuard from "../guards/login.guard";
 
 const RoutingConfig = () => {
-    return(<>
+    return (<>
         <BrowserRouter>
-        <ToastContainer/>
+            <ToastContainer />
+
             <Routes>
-                <Route path="/" element={<LoginPage/>}></Route>
-                <Route path = "/register" element={<RegisterPage/>} /> 
-                <Route path= "/home" element = {<ProfessionalSearch/>}/>
-                <Route path="/update/:id" element={<ProfilePage/>} />
-                <Route path= "*" element = {<NotFoundPage/>} />
-                <Route path = "/profile/:id" element = {<ViewProfile/>} />
-                <Route path = "/admin" element = {<AdminLayout/>} />
+                <Route path='/' element={<Navigate to="/login" replace />} />
+
+                <Route path='/login' element={
+                    <LoginGuard>
+                        <LoginPage />
+                    </LoginGuard>
+                } />
+
+                <Route path='/register' element={
+                    <LoginGuard>
+                        <RegisterPage />
+                    </LoginGuard>
+                } />
+                <Route
+                    path="/home"
+                    element={
+                        <AuthGuard>
+                            <ProfessionalSearch />
+                        </AuthGuard>
+                    }
+                />
+                <Route
+                    path="/update/:id"
+                    element={
+                        <AuthGuard>
+                            <ProfilePage />
+                        </AuthGuard>
+                    }
+                />
+                <Route
+                    path="/profile/:id"
+                    element={
+                        <AuthGuard>
+                            <ViewProfile />
+                        </AuthGuard>
+                    }
+                />
+                <Route path="*" element={<NotFoundPage />} />
             </Routes>
         </BrowserRouter>
     </>)

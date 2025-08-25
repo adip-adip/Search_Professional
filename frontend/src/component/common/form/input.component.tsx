@@ -7,6 +7,8 @@ export type InputLabelProps = {
     label :string
 }
 
+
+
 export const InputLabelCompnent = ({htmlFor, label} : InputLabelProps) => {
     return(<>
         <label htmlFor={htmlFor} className="block text-sm font-medium mb-1">{label}</label>
